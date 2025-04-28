@@ -1,0 +1,41 @@
+services:
+
+  app-server:
+    build: ./dashboard
+    image: dashboard:1.0.0
+    stdin_open: true
+    ports:
+      - "80:3000"
+    container_name: dashboard
+    volumes:
+      - ./setup/:/setup
+      - ./dashboard:/app
+      - /app/node_modules
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: npm run dev
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "1935:1935" # RTMP input
+      - "81:80" # Status or test
+    volumes:
+      - ./setup/conf/nginx.conf:/etc/nginx/nginx.conf
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    entrypoint: [ "/bin/bash", "/etc/nginx/entrypoint.sh" ]
+    container_name: nginx
+
+  stunnel:
+    build: ./stunnel
+    ports:
+      - "1936:1936" # RTMP input
+      - "1937:1937" # RTMP input
+      - "433:433" # Status or test
+    volumes:
+      # - ./stunnel/stunnel.conf:/etc/conf/stunnel.conf
+      - ./setup/conf/stunnel.conf:/etc/stunnel/stunnel.conf
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    # entrypoint: [ "/bin/bash", "/etc/stunnel/entrypoint.sh" ]
+    container_name: stunnel
