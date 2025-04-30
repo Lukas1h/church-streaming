@@ -2,7 +2,7 @@ import { docker, getContainerByName } from '$lib/docker/server/';
 
 export async function GET() {
     try {
-        const request = await fetch('http://nginx:80/stats');
+        const request = await fetch('http://nginx/stats');
         if (!request.ok) {
             throw new Error('Network response was not ok');
         }

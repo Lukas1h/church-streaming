@@ -6,6 +6,11 @@
         reloadKeys,
         getContainers,
         getNginxStats,
+        saveKeys,
+        getKeys,
+        startContainer,
+        startStream,
+        stopFallbackStream,
     } from "$lib/docker/client";
 
     let logs = "";
@@ -14,11 +19,24 @@
     let isLive = false;
     let stream = null;
 
+    const handleStopStream = async () => {
+        await stopFallbackStream();
+    };
+
     onMount(async () => {
         const source = new EventSource("/api/logs");
         source.onmessage = (event) => {
             logs += event.data + "\n";
         };
+
+        let keys = getKeys().then((data) => {
+            document.getElementById("youtube-key").value =
+                data.YOUTUBE_STREAM_KEY;
+            document.getElementById("facebook-key").value =
+                data.FACEBOOK_STREAM_KEY;
+            document.getElementById("instagram-key").value =
+                data.INSTAGRAM_STREAM_KEY;
+        });
 
         let refreshIntervalId = setInterval(() => {
             getContainers()
@@ -75,6 +93,14 @@
 >
     <h1 class="text-3xl font-bold text-slate-200">Dashboard</h1>
     <div class="flex items-center space-x-4">
+        {#if containers && containers.some( (c) => c.Names[0].includes("fallback"), ) && stream === "backup"}
+            <button
+                class="px-3 py-1 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-green-600"
+                on:click={() => handleStopStream()}
+            >
+                Stop Stream
+            </button>
+        {/if}
         <div class="flex items-center space-x-2">
             <p
                 class={cn(
@@ -82,8 +108,10 @@
                     "bg-gray-900 text-white",
                 )}
             >
-                BW In: {nginxStats?.["http-flv"]?.servers?.[0]
-                    ?.applications?.[0]?.live?.streams?.[0]?.bw_in || 0} bps
+                BW In: {(
+                    (nginxStats?.["http-flv"]?.servers?.[0]?.applications?.[0]
+                        ?.live?.streams?.[0]?.bw_in || 0) / 1_000_000
+                ).toFixed(2)} Mbps
             </p>
             <p
                 class={cn(
@@ -91,8 +119,10 @@
                     "bg-gray-900 text-white",
                 )}
             >
-                BW Out: {nginxStats?.["http-flv"]?.servers?.[0]
-                    ?.applications?.[0]?.live?.streams?.[0]?.bw_out || 0} bps
+                BW Out: {(
+                    (nginxStats?.["http-flv"]?.servers?.[0]?.applications?.[0]
+                        ?.live?.streams?.[0]?.bw_out || 0) / 1_000_000
+                ).toFixed(2)} Mbps
             </p>
         </div>
         <p
@@ -126,7 +156,15 @@
                 <h2 class="text-xl font-bold text-white">Keys</h2>
                 <button
                     class="px-3 py-1 bg-blue-500 text-white rounded-lg text-sm font-semibold hover:bg-blue-600"
-                    on:click={reloadKeys}
+                    on:click={() =>
+                        saveKeys({
+                            YOUTUBE_STREAM_KEY:
+                                document.getElementById("youtube-key").value,
+                            FACEBOOK_STREAM_KEY:
+                                document.getElementById("facebook-key").value,
+                            INSTAGRAM_STREAM_KEY:
+                                document.getElementById("instagram-key").value,
+                        })}
                 >
                     Save
                 </button>

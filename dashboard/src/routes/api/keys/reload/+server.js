@@ -18,10 +18,10 @@ export async function GET({ params }) {
         });
 
         let nginxContainer = await getContainerByName('nginx');
-        let stunnelContainer = await getContainerByName('stunnel');
+        // let stunnelContainer = await getContainerByName('stunnel');
 
         await nginxContainer.restart({ t: 1 });
-        await stunnelContainer.restart({ t: 1 });
+        // await stunnelContainer.restart({ t: 1 });
 
         if (stderr) {
             console.warn('Shell script stderr:', stderr);

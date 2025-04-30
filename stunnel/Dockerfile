@@ -10,5 +10,5 @@ USER stunnel:stunnel
 WORKDIR /var/lib/stunnel
 VOLUME /etc/stunnel
 
-# COPY stunnel.conf /etc/stunnel/stunnel.conf
+COPY stunnel.conf /etc/stunnel/stunnel.conf
 COPY entrypoint.sh /etc/stunnel/entrypoint.sh

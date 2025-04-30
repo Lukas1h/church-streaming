@@ -1,8 +1,0 @@
-client = yes
-debug = 3
-# output = /var/log/stunnel.log
-foreground = yes
-
-[https]
-accept = 127.0.0.1:8443
-connect = google.com:443

@@ -22,6 +22,7 @@ services:
 
     expose:
       - "80"
+      - "1935"
     volumes:
       - ./setup/conf/nginx.conf:/etc/nginx/nginx.conf
       - /var/run/docker.sock:/var/run/docker.sock
@@ -31,14 +32,21 @@ services:
 
   stunnel:
     build: ./stunnel
-    ports:
-      - "1936:1936" # RTMP input
-      - "1937:1937" # RTMP input
-      - "433:433" # Status or test
+    expose:
+      - "1935" # Youtube RTMP input
+      - "1936" # Facebook RTMP input
+      - "1937" # Instagram RTMP input
     volumes:
       # - ./stunnel/stunnel.conf:/etc/conf/stunnel.conf
-      - ./setup/conf/stunnel.conf:/etc/stunnel/stunnel.conf
+      # - ./setup/conf/stunnel.conf:/etc/stunnel/stunnel.conf
       - /var/run/docker.sock:/var/run/docker.sock
 
     # entrypoint: [ "/bin/bash", "/etc/stunnel/entrypoint.sh" ]
     container_name: stunnel
+  fallback:
+    build: ./fallback
+    ports:
+      - "82:80" # Status or test
+    expose:
+      - "80"
+    container_name: fallback

@@ -1,10 +1,21 @@
 // docker.js
 import Docker from 'dockerode';
+import fs from 'fs';
+import path from 'path';
 
 export const docker = new Docker({ socketPath: '/var/run/docker.sock' });
 
-
-
+export async function getKeys() {
+    try {
+        const configPath = path.resolve('/setup/config.json');
+        const fileContent = await fs.promises.readFile(configPath, 'utf-8');
+        const config = JSON.parse(fileContent);
+        return config;
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+}
 
 export async function getContainerByName(name) {
     try {

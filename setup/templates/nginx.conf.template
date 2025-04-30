@@ -12,11 +12,16 @@ rtmp {
         application live {
             live on;
             record off;
-            push rtmp://a.rtmp.youtube.com/live2/${YOUTUBE_STREAM_KEY};
+            push rtmp://stunnel:1935/live2/${YOUTUBE_STREAM_KEY};
+            push rtmp://stunnel:1936/rtmp/${FACEBOOK_STREAM_KEY};
+            exec /etc/nginx/scripts/ffmpeg_instagram.sh "$name" "rtmp://stunnel:1937/live2/${INSTAGRAM_STREAM_KEY}";
+
   
             exec_options on;
-            exec_publish /etc/nginx/scripts/nginx_rtmp_publish.sh $name "${YOUTUBE_STREAM_KEY}";
-            exec_publish_done /etc/nginx/scripts/nginx_rtmp_publish_done.sh $name "${YOUTUBE_STREAM_KEY}";
+            exec_publish /etc/nginx/scripts/nginx_rtmp_publish.sh $name "${YOUTUBE_STREAM_KEY}" "${FACEBOOK_STREAM_KEY}" "${INSTAGRAM_STREAM_KEY}";
+            exec_publish_done /etc/nginx/scripts/nginx_rtmp_publish_done.sh $name;
+
+          
         }
     }
 }
@@ -27,10 +32,12 @@ http {
 
         listen      80;
 
-        # This URL provides RTMP statistics in XML
+        # This URL provides RTMP statistics in JSON
         location /stat {
             rtmp_stat all;
             rtmp_stat_format json;
         }
+
+
     }
 }

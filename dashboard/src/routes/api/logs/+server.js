@@ -10,7 +10,7 @@ export const GET = async ({ setHeaders }) => {
         'Connection': 'keep-alive',
     });
 
-    const containers = ['nginx', 'dashboard', 'stunnel'];
+    const containers = ['nginx', 'dashboard', 'stunnel', 'fallback'];
 
     const attachLogs = async (name) => {
         try {
