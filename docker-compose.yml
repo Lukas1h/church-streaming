@@ -9,10 +9,10 @@ services:
     container_name: dashboard
     volumes:
       - ./setup/:/setup
-      - ./dashboard:/app
+      # - ./dashboard:/app
       - /app/node_modules
       - /var/run/docker.sock:/var/run/docker.sock
-    command: npm run dev
+    # command: npm run
 
   nginx:
     build: ./nginx
