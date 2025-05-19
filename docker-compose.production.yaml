@@ -1,9 +1,6 @@
 services:
   nginx:
     image: lukas1h07/nginx-http-flv-module:latest
-    ports:
-      - "1935:1935" # RTMP input
-      - "81:80" # Status or test
 
     expose:
       - "80"

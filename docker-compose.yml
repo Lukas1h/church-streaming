@@ -18,11 +18,10 @@ services:
     build: ./nginx
     ports:
       - "1935:1935" # RTMP input
-      - "81:80" # Status or test
-
     expose:
       - "80"
       - "1935"
+
     volumes:
       - ./setup/conf/nginx.conf:/etc/nginx/nginx.conf
       - /var/run/docker.sock:/var/run/docker.sock
@@ -45,8 +44,6 @@ services:
     container_name: stunnel
   fallback:
     build: ./fallback
-    ports:
-      - "82:80" # Status or test
     expose:
       - "80"
     container_name: fallback

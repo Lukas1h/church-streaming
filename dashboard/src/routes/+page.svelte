@@ -452,20 +452,6 @@
                 <h2 class="text-xl font-bold text-white">Logs</h2>
             </div>
 
-            <!-- <pre
-                class="bg-black text-green-400 p-4 text-sm flex flex-col-reverse overflow-auto rounded-md flex-1">
-                <div class="">{logs}</div>
-            
-            </pre> -->
-        </div>
-
-        <div
-            class="bg-gray-800 p-4 rounded-lg col-span-2 space-y-2 max-h-full flex flex-col"
-        >
-            <div class="flex items-center justify-between">
-                <h2 class="text-xl font-bold text-white">Logs</h2>
-            </div>
-
             <pre
                 class="bg-black text-green-400 p-4 text-sm flex flex-col-reverse overflow-auto rounded-md flex-1 max-h-[10rem]">
                 <div class="">{logs}</div>
